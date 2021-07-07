@@ -1,5 +1,5 @@
 {
-  "name": "solid-broccoli",
+  "name": "book_search_engine",
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
