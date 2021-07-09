@@ -15,24 +15,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError('Not logged in');
-    },
-  //   users: async () => {
-  //     return User.find()
-  //       .select('-__v -password')
-  //       .populate('books');
-  //   },
-  //   user: async (parent, { username }) => {
-  //     return User.findOne({ username })
-  //       .select('-__v -password')
-  //       .populate('books');
-  //   },
-  //   books: async (parent, { title }) => {
-  //     const params = title ? { title } : {};
-  //     return Book.find(params).sort({ createdAt: -1 });
-  //   },
-  //   book: async (parent, { _id }) => {
-  //     return Book.findOne({ _id });
-  //   }
+    }
   },
 
   Mutation: {
@@ -44,7 +27,7 @@ const resolvers = {
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
-
+      console.log(email, password)
       if (!user) {
         throw new AuthenticationError('Incorrect credentials');
       }
@@ -57,22 +40,22 @@ const resolvers = {
 
       const token = signToken(user);
       return { token, user };
-    } 
-    // addThought: async (parent, args, context) => {
-    //   if (context.user) {
-    //     const thought = await Thought.create({ ...args, username: context.user.username });
+    },
+    saveBook: async (parent, {input}, context) => {
+      console.log('hitts')
+      console.log(context.user)
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: input} },
+          { new: true }
+        );
 
-    //     await User.findByIdAndUpdate(
-    //       { _id: context.user._id },
-    //       { $push: { thoughts: thought._id } },
-    //       { new: true }
-    //     );
+        return updatedUser;
+      }
 
-    //     return thought;
-    //   }
-
-    //   throw new AuthenticationError('You need to be logged in!');
-    // },
+      throw new AuthenticationError('You need to be logged in!');
+    },
 //     addReaction: async (parent, { thoughtId, reactionBody }, context) => {
 //       if (context.user) {
 //         const updatedThought = await Thought.findOneAndUpdate(
