@@ -23,6 +23,7 @@ const resolvers = {
       const user = await User.create(args);
       const token = signToken(user);
 
+      console.log(token, user)
       return {token, user };
     },
     login: async (parent, { email, password }) => {
@@ -43,7 +44,7 @@ const resolvers = {
     },
     saveBook: async (parent, {input}, context) => {
       console.log('hitts')
-      console.log(context.user)
+      console.log('context.user', input)
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
